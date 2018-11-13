@@ -19,8 +19,8 @@ cas.addEventListener(down,function(ev){
 	// 获取鼠标在视口的坐标,传递参数到drawPoint
 	posY = device ? evt.touches[0].clientY: evt.clientY;
 	posX = device ? evt.touches[0].clientX: evt.clientX;
-	drawPoint(context,posY,posX);
-	// drawAll(context,posX,posY);
+	// drawPoint(context,posY,posX);
+	drawAll(context,posX,posY);
 	lock=true;
 },false);
 
@@ -34,8 +34,8 @@ cas.addEventListener(move,function(ev){
 		var moveX = device ? evt.touches[0].clientX :evt.clientX;
 		var moveY= device ? evt.touches[0].clientY : evt.clientY;
 		
-		drawLine(context,posX,posY,moveX,moveY);
-		// drawAll(context,posX,posY,moveX,moveY);
+		// drawLine(context,posX,posY,moveX,moveY);
+		drawAll(context,posX,posY,moveX,moveY);
 		// 每一次的结束点变成下一次开始的点
 		posX = moveX;
 		posY = moveY;
@@ -64,7 +64,7 @@ function drawMask(context){
 	context.restore();
 }
 // 在画布上画半径为30的圆
-function drawPoint(context,posY,posX){
+/*function drawPoint(context,posY,posX){
 	context.save();
 	context.beginPath();
 	context.arc(posX,posY,radius,0,2*Math.PI);
@@ -89,9 +89,9 @@ function drawLine(context,x1,y1,x2,y2){
 	context.stroke();
 	// 恢复原有绘图状态
 	context.restore();
-}/**/
+}*/
 
-/*function drawAll(context,x,y,x1,y1){
+function drawAll(context,x,y,x1,y1){
 	context.save();
 	context.beginPath();
 	if (arguments.length===3) {
@@ -100,24 +100,26 @@ function drawLine(context,x1,y1,x2,y2){
 		// context.fillStyle="white";
 		context.fill();
 		context.save();
-	}else{
+	}else if(arguments.length===5){
 		context.lineCap = "round";
 		context.lineWidth=radius*2;
 		// 以原点为起点,绘制一条线
 		context.moveTo(x,y);
 		context.lineTo(x1,y1);
+	}else{
+		return false;
 	}
 	context.stroke();
 	// 恢复原有绘图状态
 	context.restore();
-}*/
+}/**/
 // 清除画布
 function clearRect(context){
 	context.clearRect(0,0,_w,_h);
 }
 window.onload=function(){
 	drawMask(context);
-	drawLine(context);
+	// drawLine(context);
 };
 
 function getTransparencyPercent(context){
