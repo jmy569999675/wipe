@@ -11,14 +11,30 @@
 	html,body{width: 100%;height: 100%;margin: 0;padding: 0;}
 	#cas{
 		border:1px solid #000;
-		background: url(image/wipe1.jpg) 0 0 no-repeat;
+		
 		-webkit-background-size: cover;
 		background-size: cover;
 	}
 </style>
 </head>
 <body>
-	<canvas id="cas" width="375" height="667"></canvas>
+	<canvas id="cas"></canvas>
 </body>
 </html>
 <script src="js/wipe.js"></script>
+<script>
+	// 参数1:
+	// 参数2:
+	// 参数3:
+	var wipeConfig = {
+		id:"cas",//canvas 的id
+		coverType:"image",//表面是覆盖颜色或者是图片 color|image
+		imgUrl:"image/wipe2.jpg",
+		color:"#221234",//背景颜色
+		url:"image/wipe1.jpg",//背景图片
+		width:500,//宽度
+		height:667,//高度
+		radius:20,//画笔的半径
+	}
+	var cas1 = new Wipe(wipeConfig);
+</script>
