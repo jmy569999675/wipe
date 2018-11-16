@@ -13,7 +13,7 @@ module.exports = function(grunt){
             },
             dist:{
                 src:'src/js/*.js',
-                dest:'dist/js/<%=pkg.name%><%pkg.version%>.min.js'
+                dest:'dist/js/<%=pkg.name%><%=pkg.version%>.min.js'
             }
         },
         cssmin:{
@@ -46,12 +46,17 @@ module.exports = function(grunt){
 		},
         replace:{
             example:{
-                src:['sample/js/index.html'],
+                src:['sample/index.html'],
                 overwrite:true,
-                replace:[{
-                    from:/.min.js/g,
-                    to:'<%=pkg.name%><%pkg.version%>.min.js'
-                }]
+                replacements:[{
+                    from:/\d[\.]\d[\.]\d/g,
+                    to:'<%=pkg.version%>'
+                },
+                {
+                    //from://g,
+                   // to:
+                }
+                ]
             }
         }
 	});
