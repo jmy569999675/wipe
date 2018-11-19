@@ -52,7 +52,7 @@ Wipe.prototype.drawMask = function(){
 		this.context.beginPath();
 		var that = this;
 	if (this.coverType=="color") {
-		this.context.fillStyle=this.coverTypeValue||"#224876";
+		this.context.fillStyle=this.coverTypeValue||"#666";
 		this.context.fill();
 		this.context.fillRect(0,0,this._w,this._h);
 	}else if(this.coverType=="image"){
