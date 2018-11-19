@@ -4,7 +4,7 @@
 */
 function Wipe(obj){
 	this.coverType=obj.coverType;//类型
-	this.coverTypeValue=obj.coverType=="color"?obj.color:obj.imgUrl;//涂抹颜色或覆盖图
+	this.coverTypeValue=obj.coverType==="color"?obj.color:obj.imgUrl;//涂抹颜色或覆盖图
 	this.conID = obj.id;
 	this.cas = document.getElementById(this.conID);
 	this.context = cas.getContext("2d");
@@ -12,8 +12,8 @@ function Wipe(obj){
 	this._h = obj.height;
 	this.radius = obj.radius;//涂抹半径
 	this.lock = false;//表示鼠标状态,false为未按下,true为按下,
-	this.posY;
-	this.posX;
+	this.posY=null;
+	this.posX=null;
 	this.background = obj.url;//背景图路径
 	this.cas.setAttribute("width",this._w);
 	this.cas.setAttribute("height",this._h);
@@ -46,30 +46,29 @@ Wipe.prototype.drawT = function(x,y,x1,y1){
 	this.context.stroke();
 	// 恢复原有绘图状态
 	this.context.restore();
-}
+};
 // 初始化颜色
 Wipe.prototype.drawMask = function(){
 		this.context.beginPath();
 		var that = this;
-	if (this.coverType=="color") {
+	if (this.coverType==="color") {
 		this.context.fillStyle=this.coverTypeValue||"#666";
 		this.context.fill();
 		this.context.fillRect(0,0,this._w,this._h);
-	}else if(this.coverType=="image"){
-		var that = this;
+	}else if(this.coverType==="image"){
 		var img1=new Image();
 		img1.src = this.coverTypeValue;
 		img1.onload = function(){
 			that.context.drawImage(img1,0,0,that._w,that._h,0,0,that._w,that._h);
-		}
+		};
 	}
 	this.context.stroke();
 	this.context.restore();
-}
+};
 //清除
 Wipe.prototype.clearRect = function(){
 	this.context.clearRect(0,0,this._w,this._h);
-}
+};
 
 // 获取透明点占整个画布的百分比
 Wipe.prototype.getTransparencyPercent = function(){
@@ -85,8 +84,7 @@ Wipe.prototype.getTransparencyPercent = function(){
 	// console.log("透明个数"+num);
 	// console.log("占总面积"+Math.ceil(percent)+"%");
 	return Math.round(Math.ceil(this.percent));
-}
-
+};
 
 // device保存设备类型,如果是移动端则为true,PC端为false
 var device = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase()));
@@ -137,11 +135,11 @@ Wipe.prototype.incident = function(){
 		// 透明大于50的时候,清除画布中的内容
 		if(that.getTransparencyPercent()>=that.percent1){
 			console.log("大于"+that.percent1+"%面积");
-			wipeCallback(that.getTransparencyPercent())
+			wipeCallback(that.getTransparencyPercent());
 			that.clearRect(that.context);
 		}
 	},false);
-}
+};
 
 function getAllOffsetLeft(element){
 	var allLeft=0;//用来保存所有的offsetLeft之和
