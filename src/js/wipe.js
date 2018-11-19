@@ -4,7 +4,7 @@
 */
 function Wipe(obj){
 	this.coverType=obj.coverType;//类型
-	this.coverTypeValue=obj.coverType=="color"?obj.color:obj.imgUrl;//涂抹颜色
+	this.coverTypeValue=obj.coverType=="color"?obj.color:obj.imgUrl;//涂抹颜色或覆盖图
 	this.conID = obj.id;
 	this.cas = document.getElementById(this.conID);
 	this.context = cas.getContext("2d");
@@ -14,11 +14,11 @@ function Wipe(obj){
 	this.lock = false;//表示鼠标状态,false为未按下,true为按下,
 	this.posY;
 	this.posX;
-	
 	this.background = obj.url;//背景图路径
 	this.cas.setAttribute("width",this._w);
 	this.cas.setAttribute("height",this._h);
 	this.cas.style.background="url("+this.background+")"+" 0 0 no-repeat";
+	this.percent1= obj.percent;
 	this.drawMask();
 	this.incident();
 }
@@ -29,7 +29,7 @@ Wipe.prototype.drawT = function(x,y,x1,y1){
 	this.context.save();
 	this.context.beginPath();
 	if (arguments.length===2) {
-		this.context.arc(x,y,this.radius,0,2*Math.PI);
+		this.context.arc(x-getAllOffsetLeft(cas),y-getAllOffsetTop(cas),this.radius,0,2*Math.PI);
 		this.context.globalCompositeOperation ="destination-out";
 		// context.fillStyle="white";
 		this.context.fill();
@@ -38,8 +38,8 @@ Wipe.prototype.drawT = function(x,y,x1,y1){
 		this.context.lineCap = "round";
 		this.context.lineWidth=this.radius*2;
 		// 以原点为起点,绘制一条线
-		this.context.moveTo(x,y);
-		this.context.lineTo(x1,y1);
+		this.context.moveTo(x-getAllOffsetLeft(cas),y-getAllOffsetTop(cas));
+		this.context.lineTo(x1-getAllOffsetLeft(cas),y1-getAllOffsetTop(cas));
 	}else{
 		return false;
 	}
@@ -52,7 +52,7 @@ Wipe.prototype.drawMask = function(){
 		this.context.beginPath();
 		var that = this;
 	if (this.coverType=="color") {
-		this.context.fillStyle=this.coverTypeValue;
+		this.context.fillStyle=this.coverTypeValue||"#224876";
 		this.context.fill();
 		this.context.fillRect(0,0,this._w,this._h);
 	}else if(this.coverType=="image"){
@@ -135,10 +135,31 @@ Wipe.prototype.incident = function(){
 	cas.addEventListener(end,function(ev){
 		that.lock=false;
 		// 透明大于50的时候,清除画布中的内容
-		if(that.getTransparencyPercent(that.context)>=50){
-			console.log("大于50%面积");
+		if(that.getTransparencyPercent()>=that.percent1){
+			console.log("大于"+that.percent1+"%面积");
+			wipeCallback(that.getTransparencyPercent())
 			that.clearRect(that.context);
 		}
 	},false);
 }
 
+function getAllOffsetLeft(element){
+	var allLeft=0;//用来保存所有的offsetLeft之和
+	while(element){
+		//将对象的offsetLeft属性保存到allLeft中
+		allLeft+=element.offsetLeft;
+		//找到对象的offsetParent,即其有定位属性的父元素，将其重新将其赋值给element,实现逐级向上查找功能，一直到body标签结束
+		element=element.offsetParent;
+	}
+	return allLeft;
+}
+function getAllOffsetTop(element){
+	var allTop=0;//用来保存所有的offsetLeft之和
+	while(element){
+		//将对象的offsetLeft属性保存到allLeft中
+		allTop+=element.offsetTop;
+		//找到对象的offsetParent,将其赋值给element,
+		element=element.offsetParent;
+	}
+	return allTop;
+}

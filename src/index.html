@@ -11,7 +11,7 @@
 	html,body{width: 100%;height: 100%;margin: 0;padding: 0;}
 	#cas{
 		border:1px solid #000;
-		
+		/*margin: 50px;*/
 		-webkit-background-size: cover;
 		background-size: cover;
 	}
@@ -28,13 +28,20 @@
 	// 参数3:
 	var wipeConfig = {
 		id:"cas",//canvas 的id
-		coverType:"image",//表面是覆盖颜色或者是图片 color|image
+		coverType:"color",//表面是覆盖颜色或者是图片 color|image
 		imgUrl:"image/wipe2.jpg",
 		color:"#221234",//背景颜色
 		url:"image/wipe1.jpg",//背景图片
 		width:500,//宽度
 		height:667,//高度
 		radius:20,//画笔的半径
+		percent:80,//面积
 	}
 	var cas1 = new Wipe(wipeConfig);
+	// 当面积大于多少的时候执行这个函数
+	function wipeCallback(percent){
+		if(percent>50){
+			console.log("面积大于"+percent+"%");
+		}
+	}
 </script>
