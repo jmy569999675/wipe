@@ -19,6 +19,7 @@ function Wipe(obj){
 	this.cas.setAttribute("height",this._h);
 	this.cas.style.background="url("+this.background+")"+" 0 0 no-repeat";
 	this.percent1= obj.percent;
+	this.state = false;
 	this.drawMask();
 	this.incident();
 }
@@ -29,17 +30,20 @@ Wipe.prototype.drawT = function(x,y,x1,y1){
 	this.context.save();
 	this.context.beginPath();
 	if (arguments.length===2) {
-		this.context.arc(x-getAllOffsetLeft(cas),y-getAllOffsetTop(cas),this.radius,0,2*Math.PI);
+		this.state = false;
+		this.context.arc(x-getAllOffsetLeft(cas)+getScrollLeft(),y-getAllOffsetTop(cas)+getScrollTop(),this.radius,0,2*Math.PI);
 		this.context.globalCompositeOperation ="destination-out";
 		// context.fillStyle="white";
 		this.context.fill();
 		this.context.save();
 	}else if(arguments.length===4){
+		this.state = false;
 		this.context.lineCap = "round";
 		this.context.lineWidth=this.radius*2;
 		// 以原点为起点,绘制一条线
-		this.context.moveTo(x-getAllOffsetLeft(cas),y-getAllOffsetTop(cas));
-		this.context.lineTo(x1-getAllOffsetLeft(cas),y1-getAllOffsetTop(cas));
+		console.log(getScrollTop())
+		this.context.moveTo(x-getAllOffsetLeft(cas)+getScrollLeft(),y-getAllOffsetTop(cas)+getScrollTop());
+		this.context.lineTo(x1-getAllOffsetLeft(cas)+getScrollLeft(),y1-getAllOffsetTop(cas)+getScrollTop());
 	}else{
 		return false;
 	}
@@ -74,10 +78,16 @@ Wipe.prototype.clearRect = function(){
 Wipe.prototype.getTransparencyPercent = function(){
 	var imgData = this.context.getImageData(0,0,this._w,this._h);
 	var num = 0;
-	for (var i = 0; i < imgData.data.length; i+=4) {
-		var a = imgData.data[i+3];
-		if(a===0){
-			num++;
+	var that = this;
+	setTimeout(function(){
+		that.state = true;
+	},1000)
+	if (this.state) {
+		for (var i = 0; i < imgData.data.length; i+=4) {
+			var a = imgData.data[i+3];
+			if(a===0){
+				num++;
+			}
 		}
 	}
 	this.percent = (num/(this._w*this._h))*100;
@@ -134,13 +144,13 @@ Wipe.prototype.incident = function(){
 		that.lock=false;
 		// 透明大于50的时候,清除画布中的内容
 		if(that.getTransparencyPercent()>=that.percent1){
-			console.log("大于"+that.percent1+"%面积");
+			// console.log("大于"+that.percent1+"%面积");
 			wipeCallback(that.getTransparencyPercent());
 			that.clearRect(that.context);
 		}
 	},false);
 };
-
+// 获取元素的偏移量
 function getAllOffsetLeft(element){
 	var allLeft=0;//用来保存所有的offsetLeft之和
 	while(element){
@@ -161,3 +171,24 @@ function getAllOffsetTop(element){
 	}
 	return allTop;
 }
+// 获取滚动条高度
+function getScrollTop(){  
+    var scrollTop=0;  
+    if(document.documentElement&&document.documentElement.scrollTop){  
+        scrollTop=document.documentElement.scrollTop;  
+    }else if(document.body){  
+        scrollTop=document.body.scrollTop;  
+    }  
+    return scrollTop;  
+}
+// 获取滚动条宽度
+function getScrollLeft(){  
+    var scrollLeft=0;  
+    if(document.documentElement&&document.documentElement.scrollLeft){  
+        scrollLeft=document.documentElement.scrollLeft;  
+    }else if(document.body){  
+        scrollLeft=document.body.scrollLeft;  
+    }  
+    return scrollLeft;  
+}
+console.log(getScrollLeft())
