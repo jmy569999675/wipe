@@ -12,7 +12,7 @@
 	#cas{
 		border:1px solid #000;
 		margin: 50px;
-		margin-left: 2000px;
+		/*margin-left: 2000px;*/
 		-webkit-background-size: cover;
 		background-size: cover;
 	}
@@ -32,11 +32,12 @@
 		coverType:"color",//表面是覆盖颜色或者是图片 color|image
 		imgUrl:"image/wipe2.jpg",
 		color:"#221234",//背景颜色
-		url:"image/wipe1.jpg",//背景图片
+		url:"",//背景图片
 		width:500,//宽度
 		height:667,//高度
 		radius:20,//画笔的半径
 		percent:30,//面积
+		text:"文字",//图下文字
 	}
 	var cas1 = new Wipe(wipeConfig);
 	// 当面积大于多少的时候执行这个函数
